@@ -90,6 +90,40 @@ body {
   margin: 0 0 8px;
 }
 
+.schema-map__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.schema-map__save {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #d94640;
+  color: #ffffff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.schema-map__save:hover {
+  background: #b83832;
+}
+
+.schema-map__status {
+  font-size: 13px;
+  color: #616e7c;
+}
+
+.schema-map__status--saved {
+  color: #2f855a;
+}
+
+.schema-map__status--error {
+  color: #c0392b;
+}
+
 .schema-map__hint {
   color: #616e7c;
   margin: 0 0 8px;

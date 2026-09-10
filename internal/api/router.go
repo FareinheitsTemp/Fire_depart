@@ -9,10 +9,22 @@ import (
 )
 
 // NewRouter будує маршрутизатор API (патерни Go 1.22).
-func NewRouter() *http.ServeMux {
+// store == nil означає, що БД недоступна: тоді реєструються лише статичні ендпоінти.
+func NewRouter(store *Store) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/health", handleHealth)
 	mux.HandleFunc("GET /api/schema", handleSchema)
+
+	if store != nil {
+		mux.HandleFunc("GET /api/layout/{view}", store.handleGetLayout)
+		mux.HandleFunc("PUT /api/layout/{view}", store.handleSaveLayout)
+
+		mux.HandleFunc("GET /api/tables/{table}", store.handleListRows)
+		mux.HandleFunc("POST /api/tables/{table}", store.handleInsertRow)
+		mux.HandleFunc("PATCH /api/tables/{table}/{id}", store.handleUpdateRow)
+		mux.HandleFunc("PUT /api/tables/{table}/{id}", store.handleUpdateRow)
+		mux.HandleFunc("DELETE /api/tables/{table}/{id}", store.handleDeleteRow)
+	}
 	return mux
 }
 

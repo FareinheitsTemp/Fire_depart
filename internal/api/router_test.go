@@ -8,7 +8,7 @@ import (
 )
 
 func TestSchemaEndpoint(t *testing.T) {
-	srv := httptest.NewServer(NewRouter())
+	srv := httptest.NewServer(NewRouter(nil))
 	defer srv.Close()
 
 	res, err := http.Get(srv.URL + "/api/schema")
@@ -31,7 +31,7 @@ func TestSchemaEndpoint(t *testing.T) {
 }
 
 func TestHealthEndpoint(t *testing.T) {
-	srv := httptest.NewServer(NewRouter())
+	srv := httptest.NewServer(NewRouter(nil))
 	defer srv.Close()
 
 	res, err := http.Get(srv.URL + "/api/health")
@@ -42,5 +42,20 @@ func TestHealthEndpoint(t *testing.T) {
 
 	if res.StatusCode != http.StatusOK {
 		t.Fatalf("status = %d, want 200", res.StatusCode)
+	}
+}
+
+func TestTablesRouteWithoutStore(t *testing.T) {
+	srv := httptest.NewServer(NewRouter(nil))
+	defer srv.Close()
+
+	res, err := http.Get(srv.URL + "/api/tables/incidents")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusNotFound {
+		t.Fatalf("status = %d, want 404 (CRUD без БД не реєструється)", res.StatusCode)
 	}
 }
