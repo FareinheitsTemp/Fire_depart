@@ -7,13 +7,13 @@
 ## Структура репозиторію
 
 - `cmd/firedepart/` — точка входу HTTP API (стандартна бібліотека `net/http`, патерни Go 1.22)
-- `internal/api/` — REST-хендлери (`/api/health`, `/api/schema`)
+- `internal/api/` — REST-хендлери (`/api/health`, `/api/schema`, CRUD, layout)
 - `internal/config/` — конфігурація через змінні оточення
-- `internal/db/` — DDL-схема PostgreSQL та метадані таблиць для ERD-мапи
+- `internal/db/` — DDL-схема PostgreSQL, метадані, CRUD-шар на pgx/v5
 - `db/migrations/` — SQL-міграції (PK, FK, CHECK, UNIQUE, індекси, сід довідників)
-- `frontend/` — React + TypeScript (Vite), SCSS/BEM, ERD-мапа на React Flow
+- `frontend/` — React + TypeScript (Vite), SCSS/BEM, ERD-мапа на React Flow, CRUD-браузер
 - `docs/` — документація проєкту БД
-- `.github/workflows/ci.yml` — CI: Go (vet/build/test) + frontend (npm build)
+- `.github/workflows/ci.yml` — CI: Go (tidy/vet/build/test) + frontend (npm build)
 
 ## Швидкий старт
 
@@ -28,6 +28,7 @@ docker compose up -d
 ### 2. Backend
 
 ```bash
+go mod tidy   # генерує go.sum (після pull — обов'язково)
 go run ./cmd/firedepart
 ```
 
@@ -43,12 +44,21 @@ npm run dev
 
 Dev-сервер на `http://localhost:5173`, запити `/api/*` проксіються на `:8080`.
 
+## API
+
+- `GET /api/health` — статус сервера
+- `GET /api/schema` — метадані таблиць (колонки, PK, FK) для ERD-мапи і форм
+- `GET /api/tables/{table}` — список рядків (до 500)
+- `POST /api/tables/{table}` — створити запис
+- `PATCH|PUT /api/tables/{table}/{id}` — оновити запис
+- `DELETE /api/tables/{table}/{id}` — видалити запис
+- `GET|PUT /api/layout/{view}` — позиції вузлів ERD-мапи (автозбереження при перетягуванні)
+
 ## Дорожня карта
 
 - [x] Схема PostgreSQL з PK/FK/CHECK/UNIQUE/індексами
-- [x] ERD-мапа схеми (React Flow) з перетягуванням таблиць
-- [ ] CRUD-ендпоінти для всіх сутностей + підключення pgx/v5
-- [ ] Збереження позицій вузлів ERD-мапи (`schema_layouts` + API)
-- [ ] Збереження/редагування таблиць і колонок з UI
+- [x] ERD-мапа схеми (React Flow) з перетягуванням і збереженням позицій
+- [x] CRUD-ендпоінти (pgx/v5, whitelist + параметризація) та CRUD-браузер у UI
+- [ ] Редактор схеми: створення/редагування таблиць і колонок з UI
 - [ ] Дашборд: активні виклики, техніка, зміни
 - [ ] PDF-звіти по викликах (час, адреса, бригада, збитки)

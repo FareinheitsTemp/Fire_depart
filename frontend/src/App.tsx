@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { Sidebar } from './components/Sidebar'
+import { DataBrowser } from './components/DataBrowser'
 import { SchemaMap } from './components/SchemaMap'
 
-type Page = 'dashboard' | 'incidents' | 'schema'
+type Page = 'dashboard' | 'data' | 'schema'
 
 const PAGES: { id: Page; label: string }[] = [
   { id: 'dashboard', label: 'Дашборд' },
-  { id: 'incidents', label: 'Виклики' },
+  { id: 'data', label: 'Дані (CRUD)' },
   { id: 'schema', label: 'Структура БД' },
 ]
 
@@ -23,12 +24,7 @@ export default function App() {
             <p className="page__hint">Активні виклики, техніка та зміни — наступний етап.</p>
           </section>
         )}
-        {page === 'incidents' && (
-          <section className="page">
-            <h2 className="page__title">Виклики</h2>
-            <p className="page__hint">CRUD викликів — наступний етап.</p>
-          </section>
-        )}
+        {page === 'data' && <DataBrowser />}
         {page === 'schema' && <SchemaMap />}
       </main>
     </div>
