@@ -72,7 +72,7 @@ function initValues(def: TableDef, initial: Row | null): Record<string, FormValu
 }
 
 export function RecordForm({ def, initial, onSubmit, onCancel }: RecordFormProps) {
-  const [values, setValues] = useState<Record<string, FormValue>>(initValues(def, initial))
+  const [values, setValues] = useState<Record<string, FormValue>>(initValues(def, initial ?? null))
   const [fkOptions, setFkOptions] = useState<Record<string, { value: number; label: string }[]>>({})
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
