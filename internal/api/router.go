@@ -1,0 +1,47 @@
+// Package api містить REST-хендлери бекенду.
+package api
+
+import (
+	"encoding/json"
+	"net/http"
+
+	"github.com/FareinheitsTemp/fire_depart/internal/db"
+)
+
+// NewRouter будує маршрутизатор API (патерни Go 1.22).
+// store == nil означає, що БД недоступна: тоді реєструються лише статичні ендпоінти.
+func NewRouter(store *Store) *http.ServeMux {
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /api/health", handleHealth)
+	mux.HandleFunc("GET /api/schema", handleSchema)
+
+	if store != nil {
+		mux.HandleFunc("GET /api/layout/{view}", store.handleGetLayout)
+		mux.HandleFunc("PUT /api/layout/{view}", store.handleSaveLayout)
+
+		mux.HandleFunc("GET /api/tables/{table}", store.handleListRows)
+		mux.HandleFunc("POST /api/tables/{table}", store.handleInsertRow)
+		mux.HandleFunc("PATCH /api/tables/{table}/{id}", store.handleUpdateRow)
+		mux.HandleFunc("PUT /api/tables/{table}/{id}", store.handleUpdateRow)
+		mux.HandleFunc("DELETE /api/tables/{table}/{id}", store.handleDeleteRow)
+
+		mux.HandleFunc("GET /api/dashboard", store.handleDashboard)
+		mux.HandleFunc("GET /api/report/incidents", store.handleIncidentsReport)
+		mux.HandleFunc("GET /api/report/incident/{id}", store.handleIncidentDetailReport)
+	}
+	return mux
+}
+
+func handleHealth(w http.ResponseWriter, _ *http.Request) {
+	writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
+}
+
+func handleSchema(w http.ResponseWriter, _ *http.Request) {
+	writeJSON(w, http.StatusOK, db.SchemaMeta())
+}
+
+func writeJSON(w http.ResponseWriter, status int, v any) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(status)
+	_ = json.NewEncoder(w).Encode(v)
+}
