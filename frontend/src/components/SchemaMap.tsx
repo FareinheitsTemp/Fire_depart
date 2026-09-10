@@ -17,6 +17,7 @@ import {
   type LayoutPositions,
   type TableDef,
 } from '../api/client'
+import { SchemaEditor } from './SchemaEditor'
 
 const LAYOUT_VIEW = 'schema'
 
@@ -46,8 +47,10 @@ export function SchemaMap() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+  const [refreshKey, setRefreshKey] = useState(0)
 
   useEffect(() => {
+    setLoading(true)
     Promise.all([fetchSchema(), fetchLayout(LAYOUT_VIEW)])
       .then(([tables, layout]) => {
         setNodes(toNodes(tables, layout))
@@ -58,7 +61,7 @@ export function SchemaMap() {
         setError(e instanceof Error ? e.message : 'невідома помилка')
         setLoading(false)
       })
-  }, [setNodes, setEdges])
+  }, [refreshKey, setNodes, setEdges])
 
   const persistLayout = useCallback((current: TableNode[]) => {
     const positions: LayoutPositions = {}
@@ -77,6 +80,10 @@ export function SchemaMap() {
     },
     [nodes, persistLayout],
   )
+
+  const handleSchemaChanged = useCallback(() => {
+    setRefreshKey((k) => k + 1)
+  }, [])
 
   return (
     <section className="schema-map">
@@ -109,6 +116,7 @@ export function SchemaMap() {
           <Controls />
         </ReactFlow>
       </div>
+      <SchemaEditor onChanged={handleSchemaChanged} />
     </section>
   )
 }

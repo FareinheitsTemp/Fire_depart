@@ -47,6 +47,12 @@ export interface DashboardStats {
   vehiclesByStatus: StatusCount[]
 }
 
+export interface ColumnInput {
+  name: string
+  type: string
+  nullable: boolean
+}
+
 export async function fetchSchema(): Promise<TableDef[]> {
   const res = await fetch('/api/schema')
   if (!res.ok) {
@@ -118,10 +124,50 @@ export async function deleteRow(table: string, id: number): Promise<void> {
   }
 }
 
+export async function createTable(name: string, columns: ColumnInput[]): Promise<void> {
+  const res = await fetch('/api/admin/tables', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, columns }),
+  })
+  await expectOkNoContent(res, `не вдалося створити таблицю "${name}"`)
+}
+
+export async function dropTable(name: string): Promise<void> {
+  const res = await fetch(`/api/admin/tables/${encodeURIComponent(name)}`, {
+    method: 'DELETE',
+  })
+  await expectOkNoContent(res, `не вдалося видалити таблицю "${name}"`)
+}
+
+export async function addColumn(table: string, col: ColumnInput): Promise<void> {
+  const res = await fetch(`/api/admin/tables/${encodeURIComponent(table)}/columns`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(col),
+  })
+  await expectOkNoContent(res, `не вдалося додати колонку до "${table}"`)
+}
+
+export async function dropColumn(table: string, column: string): Promise<void> {
+  const res = await fetch(
+    `/api/admin/tables/${encodeURIComponent(table)}/columns/${encodeURIComponent(column)}`,
+    { method: 'DELETE' },
+  )
+  await expectOkNoContent(res, `не вдалося видалити колонку "${column}"`)
+}
+
 async function expectOk(res: Response, message: string): Promise<Row> {
   if (!res.ok) {
     const body = (await res.json().catch(() => null)) as { error?: string } | null
     throw new Error(body?.error ?? `${message} (HTTP ${res.status})`)
   }
   return (await res.json()) as Row
+}
+
+async function expectOkNoContent(res: Response, message: string): Promise<void> {
+  if (!res.ok) {
+    const body = (await res.json().catch(() => null)) as { error?: string } | null
+    throw new Error(body?.error ?? `${message} (HTTP ${res.status})`)
+  }
 }

@@ -201,18 +201,18 @@ body {
 .schema-map {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 48px);
+  gap: 8px;
 }
 
 .schema-map__title {
-  margin: 0 0 8px;
+  margin: 0;
 }
 
 .schema-map__toolbar {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .schema-map__save {
@@ -244,7 +244,7 @@ body {
 
 .schema-map__hint {
   color: #616e7c;
-  margin: 0 0 8px;
+  margin: 0;
 }
 
 .schema-map__hint--error {
@@ -252,11 +252,154 @@ body {
 }
 
 .schema-map__canvas {
-  flex: 1;
-  min-height: 400px;
+  height: 520px;
   border: 1px solid #d9e2ec;
   border-radius: 8px;
   background: #ffffff;
+}
+
+/* Блок: schema-editor — панель редагування структури БД */
+.schema-editor {
+  margin-top: 8px;
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.schema-editor__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.schema-editor__title {
+  margin: 0;
+  font-size: 15px;
+}
+
+.schema-editor__create {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #2f855a;
+  color: #ffffff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.schema-editor__create:hover {
+  background: #276749;
+}
+
+.schema-editor__hint {
+  color: #616e7c;
+  margin: 0 0 8px;
+  font-size: 13px;
+}
+
+.schema-editor__hint--error {
+  color: #c0392b;
+}
+
+.schema-editor__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.schema-editor__item {
+  border: 1px solid #e4e9ee;
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+
+.schema-editor__name {
+  font-family: monospace;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.schema-editor__meta {
+  color: #9aa5b1;
+  font-size: 12px;
+  margin-right: 12px;
+}
+
+.schema-editor__actions {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.schema-editor__btn {
+  padding: 4px 10px;
+  border: 1px solid #d9e2ec;
+  border-radius: 4px;
+  background: #ffffff;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.schema-editor__btn--danger {
+  color: #c0392b;
+  border-color: #e6b0aa;
+}
+
+.schema-editor__cols {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.schema-editor__col {
+  padding: 2px 8px;
+  border: 1px dashed #cbd2d9;
+  border-radius: 4px;
+  background: #f4f6f8;
+  font-size: 12px;
+  font-family: monospace;
+  cursor: pointer;
+}
+
+.schema-editor__row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.schema-editor__row .record-form__input,
+.schema-editor__row .record-form__select {
+  flex: 1;
+}
+
+.schema-editor__null {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.schema-editor__row-del {
+  border: none;
+  background: transparent;
+  color: #c0392b;
+  cursor: pointer;
+}
+
+.schema-editor__add-row {
+  align-self: flex-start;
+  padding: 6px 12px;
+  border: 1px dashed #cbd2d9;
+  border-radius: 6px;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 13px;
 }
 
 /* Блок: erd-table — вузол-таблиця на мапі */
