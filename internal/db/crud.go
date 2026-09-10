@@ -15,7 +15,16 @@ import (
 // ErrUnknownTable — таблиці немає в реєстрі схеми.
 var ErrUnknownTable = errors.New("невідома таблиця")
 
+// tableDef дивиться спершу в динамічний реєстр (жива схема), потім у статичний.
 func tableDef(name string) (Table, bool) {
+	metaMu.RLock()
+	for _, t := range metaDyn {
+		if t.Name == name {
+			metaMu.RUnlock()
+			return t, true
+		}
+	}
+	metaMu.RUnlock()
 	for _, t := range schemaMeta {
 		if t.Name == name {
 			return t, true
@@ -36,6 +45,11 @@ func coerce(typ string, v any) (any, error) {
 		}
 		if i, ok := v.(int64); ok {
 			return i, nil
+		}
+		return nil, fmt.Errorf("очікувалося число (тип %s)", typ)
+	case typ == "bigint", typ == "smallint":
+		if f, ok := v.(float64); ok {
+			return int64(f), nil
 		}
 		return nil, fmt.Errorf("очікувалося число (тип %s)", typ)
 	case strings.HasPrefix(typ, "numeric"):

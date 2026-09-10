@@ -24,6 +24,9 @@ func main() {
 		if err := db.EnsureSchema(ctx, pool); err != nil {
 			log.Printf("УВАГА: не вдалося застосувати схему: %v", err)
 		}
+		if err := db.RefreshSchemaMeta(ctx, pool); err != nil {
+			log.Printf("УВАГА: не вдалося прочитати схему з БД: %v", err)
+		}
 		store = &api.Store{Pool: pool}
 		log.Printf("підключено до PostgreSQL")
 	}
@@ -34,7 +37,7 @@ func main() {
 	log.Fatal(http.ListenAndServe(cfg.HTTPAddr, handler))
 }
 
-// withCORS<arg_key>іляє запити з dev-сервера фронтенду (Vite, :5173).
+// withCORS дозволяє запити з dev-сервера фронтенду (Vite, :5173).
 func withCORS(origins []string, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if origin := r.Header.Get("Origin"); origin != "" {

@@ -13,9 +13,10 @@ import (
 func NewRouter(store *Store) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/health", handleHealth)
-	mux.HandleFunc("GET /api/schema", handleSchema)
 
 	if store != nil {
+		mux.HandleFunc("GET /api/schema", store.handleSchemaLive)
+
 		mux.HandleFunc("GET /api/layout/{view}", store.handleGetLayout)
 		mux.HandleFunc("PUT /api/layout/{view}", store.handleSaveLayout)
 
@@ -25,15 +26,32 @@ func NewRouter(store *Store) *http.ServeMux {
 		mux.HandleFunc("PUT /api/tables/{table}/{id}", store.handleUpdateRow)
 		mux.HandleFunc("DELETE /api/tables/{table}/{id}", store.handleDeleteRow)
 
+		mux.HandleFunc("POST /api/admin/tables", store.handleCreateTable)
+		mux.HandleFunc("DELETE /api/admin/tables/{table}", store.handleDropTable)
+		mux.HandleFunc("POST /api/admin/tables/{table}/columns", store.handleAddColumn)
+		mux.HandleFunc("DELETE /api/admin/tables/{table}/columns/{column}", store.handleDropColumn)
+
 		mux.HandleFunc("GET /api/dashboard", store.handleDashboard)
 		mux.HandleFunc("GET /api/report/incidents", store.handleIncidentsReport)
 		mux.HandleFunc("GET /api/report/incident/{id}", store.handleIncidentDetailReport)
+	} else {
+		mux.HandleFunc("GET /api/schema", handleSchema)
 	}
 	return mux
 }
 
 func handleHealth(w http.ResponseWriter, _ *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
+}
+
+// handleSchemaLive — метадані з живої БД (включно з таблицями, створеними через UI).
+func (s *Store) handleSchemaLive(w http.ResponseWriter, r *http.Request) {
+	tables, err := db.LoadSchemaMeta(r.Context(), s.Pool)
+	if err != nil {
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+		return
+	}
+	writeJSON(w, http.StatusOK, tables)
 }
 
 func handleSchema(w http.ResponseWriter, _ *http.Request) {
