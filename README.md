@@ -1,31 +1,54 @@
 # Fire_depart
 
-Система управління пожежною частиною: виклики, зміни, особовий склад, збитки.
+Курсовий проєкт: система обліку викликів пожежної частини.
 
-Чистий старт на Go + PostgreSQL — без MS Access, ODBC і cgo.
+**Стек:** Go (REST API) · PostgreSQL (БД) · React + TypeScript + Vite (фронтенд) · SCSS + BEM (стилі).
 
-## Структура
+## Структура репозиторію
 
-- `cmd/firedepart` — точка входу (HTTP-сервер, `/healthz`)
-- `internal/config` — конфігурація через змінні оточення (`HTTP_ADDR`, `DATABASE_DSN`)
-- `internal/db` — канонічна схема PostgreSQL (DDL)
+- `cmd/firedepart/` — точка входу HTTP API (стандартна бібліотека `net/http`, патерни Go 1.22)
+- `internal/api/` — REST-хендлери (`/api/health`, `/api/schema`)
+- `internal/config/` — конфігурація через змінні оточення
+- `internal/db/` — DDL-схема PostgreSQL та метадані таблиць для ERD-мапи
+- `db/migrations/` — SQL-міграції (PK, FK, CHECK, UNIQUE, індекси, сід довідників)
+- `frontend/` — React + TypeScript (Vite), SCSS/BEM, ERD-мапа на React Flow
+- `docs/` — документація проєкту БД
+- `.github/workflows/ci.yml` — CI: Go (vet/build/test) + frontend (npm build)
 
-## Запуск
+## Швидкий старт
+
+### 1. База даних (PostgreSQL у Docker)
 
 ```bash
-go build ./...
-go test ./...
+docker compose up -d
+```
+
+Міграція `db/migrations/001_initial_schema.sql` застосовується автоматично при першому старті тому.
+
+### 2. Backend
+
+```bash
 go run ./cmd/firedepart
 ```
 
-Дефолтний DSN: `postgres://postgres:postgres@localhost:5432/fire_depart?sslmode=disable`.
+API слухає на `:8080` (змінна `HTTP_ADDR`). Дефолтний DSN: `postgres://postgres:postgres@localhost:5432/fire_depart?sslmode=disable` (змінна `DATABASE_DSN`).
 
-## CI
+### 3. Frontend
 
-GitHub Actions (`.github/workflows/ci.yml`): `go vet` + `go build` + `go test` на кожен push і PR.
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Dev-сервер на `http://localhost:5173`, запити `/api/*` проксіються на `:8080`.
 
 ## Дорожня карта
 
-- [ ] Підключити `pgx/v5` (пул з'єднань, `INSERT ... RETURNING`)
-- [ ] CRUD-ендпоінти
-- [ ] Міграції схеми
+- [x] Схема PostgreSQL з PK/FK/CHECK/UNIQUE/індексами
+- [x] ERD-мапа схеми (React Flow) з перетягуванням таблиць
+- [ ] CRUD-ендпоінти для всіх сутностей + підключення pgx/v5
+- [ ] Збереження позицій вузлів ERD-мапи (`schema_layouts` + API)
+- [ ] Збереження/редагування таблиць і колонок з UI
+- [ ] Дашборд: активні виклики, техніка, зміни
+- [ ] PDF-звіти по викликах (час, адреса, бригада, збитки)
