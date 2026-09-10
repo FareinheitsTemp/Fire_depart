@@ -1,0 +1,15 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/firedepart
+/fire_depart
+
+# Local env / config
+.env
+
+# IDE
+.idea/
+.vscode/
