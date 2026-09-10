@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Sidebar } from './components/Sidebar'
+import { Dashboard } from './components/Dashboard'
 import { DataBrowser } from './components/DataBrowser'
 import { SchemaMap } from './components/SchemaMap'
 
@@ -18,12 +19,7 @@ export default function App() {
     <div className="app">
       <Sidebar pages={PAGES} active={page} onSelect={setPage} />
       <main className="app__content">
-        {page === 'dashboard' && (
-          <section className="page">
-            <h2 className="page__title">Дашборд</h2>
-            <p className="page__hint">Активні виклики, техніка та зміни — наступний етап.</p>
-          </section>
-        )}
+        {page === 'dashboard' && <Dashboard />}
         {page === 'data' && <DataBrowser />}
         {page === 'schema' && <SchemaMap />}
       </main>

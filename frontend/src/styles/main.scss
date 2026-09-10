@@ -79,6 +79,124 @@ body {
   color: #616e7c;
 }
 
+/* Блок: dashboard — головна сторінка */
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dashboard__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dashboard__title {
+  margin: 0;
+  font-size: 20px;
+}
+
+.dashboard__report {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #d94640;
+  color: #ffffff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.dashboard__report:hover {
+  background: #b83832;
+}
+
+.dashboard__hint {
+  color: #616e7c;
+  margin: 0;
+}
+
+.dashboard__hint--error {
+  color: #c0392b;
+}
+
+.dashboard__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.dashboard-card {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dashboard-card__value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2933;
+}
+
+.dashboard-card__label {
+  font-size: 13px;
+  color: #616e7c;
+}
+
+.dashboard-card--danger .dashboard-card__value {
+  color: #c0392b;
+}
+
+.dashboard-card--ok .dashboard-card__value {
+  color: #2f855a;
+}
+
+.dashboard__lists {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+}
+
+.dashboard__panel {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 8px;
+  padding: 16px;
+  min-width: 0;
+}
+
+.dashboard__panel-title {
+  margin: 0 0 10px;
+  font-size: 15px;
+}
+
+.dashboard__status-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dashboard__status-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  border-bottom: 1px dashed #e4e9ee;
+  padding-bottom: 8px;
+}
+
+@media (max-width: 900px) {
+  .dashboard__lists {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Блок: schema-map — ERD-мапа бази даних */
 .schema-map {
   display: flex;

@@ -7,11 +7,11 @@
 ## Структура репозиторію
 
 - `cmd/firedepart/` — точка входу HTTP API (стандартна бібліотека `net/http`, патерни Go 1.22)
-- `internal/api/` — REST-хендлери (`/api/health`, `/api/schema`, CRUD, layout)
+- `internal/api/` — REST-хендлери (`/api/health`, `/api/schema`, CRUD, layout, дашборд, звіти)
 - `internal/config/` — конфігурація через змінні оточення
-- `internal/db/` — DDL-схема PostgreSQL, метадані, CRUD-шар на pgx/v5
+- `internal/db/` — DDL-схема PostgreSQL, метадані, CRUD-шар на pgx/v5, дашборд, звіти
 - `db/migrations/` — SQL-міграції (PK, FK, CHECK, UNIQUE, індекси, сід довідників)
-- `frontend/` — React + TypeScript (Vite), SCSS/BEM, ERD-мапа на React Flow, CRUD-браузер
+- `frontend/` — React + TypeScript (Vite), SCSS/BEM, ERD-мапа, CRUD-браузер, дашборд
 - `docs/` — документація проєкту БД
 - `.github/workflows/ci.yml` — CI: Go (tidy/vet/build/test) + frontend (npm build)
 
@@ -48,17 +48,21 @@ Dev-сервер на `http://localhost:5173`, запити `/api/*` прокс�
 
 - `GET /api/health` — статус сервера
 - `GET /api/schema` — метадані таблиць (колонки, PK, FK) для ERD-мапи і форм
+- `GET /api/dashboard` — агреговані показники дашборда
 - `GET /api/tables/{table}` — список рядків (до 500)
 - `POST /api/tables/{table}` — створити запис
 - `PATCH|PUT /api/tables/{table}/{id}` — оновити запис
 - `DELETE /api/tables/{table}/{id}` — видалити запис
 - `GET|PUT /api/layout/{view}` — позиції вузлів ERD-мапи (автозбереження при перетягуванні)
+- `GET /api/report/incidents` — зведений звіт по викликах (HTML, друк → PDF)
+- `GET /api/report/incident/{id}` — детальний звіт по виклику (HTML, друк → PDF)
 
 ## Дорожня карта
 
 - [x] Схема PostgreSQL з PK/FK/CHECK/UNIQUE/індексами
 - [x] ERD-мапа схеми (React Flow) з перетягуванням і збереженням позицій
 - [x] CRUD-ендпоінти (pgx/v5, whitelist + параметризація) та CRUD-браузер у UI
+- [x] Дашборд: активні виклики, техніка, склад, останні виклики
+- [x] Звіти по викликах (друк/PDF: зведений + детальний)
 - [ ] Редактор схеми: створення/редагування таблиць і колонок з UI
-- [ ] Дашборд: активні виклики, техніка, зміни
-- [ ] PDF-звіти по викликах (час, адреса, бригада, збитки)
+- [ ] Автентифікація користувачів

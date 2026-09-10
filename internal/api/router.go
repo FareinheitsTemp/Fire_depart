@@ -24,6 +24,10 @@ func NewRouter(store *Store) *http.ServeMux {
 		mux.HandleFunc("PATCH /api/tables/{table}/{id}", store.handleUpdateRow)
 		mux.HandleFunc("PUT /api/tables/{table}/{id}", store.handleUpdateRow)
 		mux.HandleFunc("DELETE /api/tables/{table}/{id}", store.handleDeleteRow)
+
+		mux.HandleFunc("GET /api/dashboard", store.handleDashboard)
+		mux.HandleFunc("GET /api/report/incidents", store.handleIncidentsReport)
+		mux.HandleFunc("GET /api/report/incident/{id}", store.handleIncidentDetailReport)
 	}
 	return mux
 }

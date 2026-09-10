@@ -23,12 +23,44 @@ export interface LayoutPositions {
 
 export type Row = Record<string, unknown>
 
+export interface IncidentCard {
+  id: number
+  type: string
+  address: string
+  station: string
+  status: string
+  receivedAt: string
+}
+
+export interface StatusCount {
+  status: string
+  count: number
+}
+
+export interface DashboardStats {
+  activeIncidents: number
+  incidentsToday: number
+  vehiclesAvailable: number
+  vehiclesTotal: number
+  activeEmployees: number
+  recentIncidents: IncidentCard[]
+  vehiclesByStatus: StatusCount[]
+}
+
 export async function fetchSchema(): Promise<TableDef[]> {
   const res = await fetch('/api/schema')
   if (!res.ok) {
     throw new Error(`не вдалося завантажити схему (HTTP ${res.status})`)
   }
   return (await res.json()) as TableDef[]
+}
+
+export async function fetchDashboard(): Promise<DashboardStats> {
+  const res = await fetch('/api/dashboard')
+  if (!res.ok) {
+    throw new Error(`не вдалося завантажити дані дашборда (HTTP ${res.status})`)
+  }
+  return (await res.json()) as DashboardStats
 }
 
 export async function fetchLayout(view: string): Promise<LayoutPositions | null> {
