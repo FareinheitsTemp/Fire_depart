@@ -6,7 +6,6 @@ import {
   type Edge,
   type Node,
   type NodeProps,
-  type OnNodeDrag,
   useEdgesState,
   useNodesState,
 } from '@xyflow/react'
@@ -72,7 +71,7 @@ export function SchemaMap() {
       .catch(() => setSaveState('error'))
   }, [])
 
-  const handleNodeDragStop: OnNodeDrag = useCallback(
+  const handleNodeDragStop = useCallback(
     () => {
       persistLayout(nodes)
     },

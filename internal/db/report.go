@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -71,7 +70,7 @@ type IncidentDetail struct {
 }
 
 // ReportIncidentDetail повертає деталі виклику (техніка, бригада, підсумок).
-// Повертає pgx.ErrNoRows, якщо виклику не існує.
+// Повертає помилку з Execute на кшталт "no rows in result set", якщо виклику не існує.
 func ReportIncidentDetail(ctx context.Context, pool *pgxpool.Pool, id int64) (*IncidentDetail, error) {
 	d := &IncidentDetail{
 		Vehicles:   make([]string, 0),
